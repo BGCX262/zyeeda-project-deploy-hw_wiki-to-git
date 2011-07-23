@@ -87,7 +87,7 @@ b、ROOT\WEB-INF\classes\META-INF\orm\persistence-unit-metadata.orm.xml ，应�
 #
 sh_home=/etc/init.d/
 tomcat_home=/etc/tomcat7/
-new_home=/home/master/new_war/
+new_home=/root/new_war/
 
 ls_tomcat_home=$(ls $tomcat_home)
 echo $ls_tomcat_home
