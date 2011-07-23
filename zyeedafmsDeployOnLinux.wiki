@@ -20,6 +20,7 @@ zyeeda-fms 的项目结构,一共有7个分开的项目：
 
 a、 ROOT\csg-ehvgz-4d\lib\zyeeda\common\config.js,跟IP有关的配置，改为服务器的IP
 
+<code class="prettyprint">
 /*system config*/
 ZUI.currentSystemConfig = {
         ldapDepartmentUrl : 'http://192.168.1.85:9300/rest/depts/root/children?type=task&type=task&isFilter=true',
@@ -29,11 +30,13 @@ ZUI.currentSystemConfig = {
         opSignoutUrl : 'http://192.168.1.87:9100/provider/signout.jsp',
         rpSignoutUrl : 'http://192.168.1.85:9300/accounts/openid/signout.jsp'
 }
+</code>
 
 
 b、ROOT\WEB-INF\classes\META-INF\orm\persistence-unit-metadata.orm.xml ，应为
 
 
+<code class="prettyprint">
 <?xml version="1.0" encoding="UTF-8"?>
 <entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -47,6 +50,7 @@ b、ROOT\WEB-INF\classes\META-INF\orm\persistence-unit-metadata.orm.xml ，应�
     </persistence-unit-metadata>
     
 </entity-mappings>
+</code>
 
 
 上传至服务器并布署
@@ -73,7 +77,7 @@ b、ROOT\WEB-INF\classes\META-INF\orm\persistence-unit-metadata.orm.xml ，应�
 
 附上 deploy.sh code
 
-
+<code class="prettyprint">
 #!/bin/bash
 #description 项目部署脚本，请以root运行
 #
@@ -83,13 +87,12 @@ sh_home=/etc/init.d/
 tomcat_home=/etc/tomcat7/
 new_home=/home/master/new_war/
 
-#echo "Stop your application, it will open automatically after you deploy,\ninput services namei[zyeeda-fms zyeeda-dex zyeeda-opex]: \c"
 #read ser
 #sh $sh_home$ser stop
 
 ls_tomcat_home=$(ls $tomcat_home)
 echo $ls_tomcat_home
-echo "Please input your backup project name[zyeeda-fms zyeeda-dex zyeeda-opex]: \c"
+echo "Please input your backup project name: \c"
 read pname
 rm -rf $tomcat_home$pname/webapps.bak
 cp -a $tomcat_home$pname/webapps $tomcat_home$pname/webapps.bak
@@ -102,7 +105,8 @@ cp -a $new_home$newpname/* $tomcat_home$pname/webapps
 chown -R tomcat:tomcat $tomcat_home$pname/webapps/**
 echo "Do not forget config your application"
 
-echo "Restart your application \ninput services namei[zyeeda-fms zyeeda-dex zyeeda-opex]: \c"
+echo "Restart your application \ninput services name: \c"
 read ser
 sh $sh_home$ser restart
 tail -f $tomcat_home$pname/logs/catalina-daemon.out
+</code>
