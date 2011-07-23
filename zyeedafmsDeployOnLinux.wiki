@@ -44,11 +44,15 @@ b、ROOT\WEB-INF\classes\META-INF\orm\persistence-unit-metadata.orm.xml ，应�
     version="2.0">
     
     <persistence-unit-metadata>
+
         <persistence-unit-defaults>
+
             <schema>CSG_EHVGZ_4D</schema>
+
         </persistence-unit-defaults>
+
     </persistence-unit-metadata>
-    
+
 </entity-mappings>
 </code>
 
@@ -81,14 +85,10 @@ b、ROOT\WEB-INF\classes\META-INF\orm\persistence-unit-metadata.orm.xml ，应�
 #!/bin/bash
 #description 项目部署脚本，请以root运行
 #
-
 #sh_home=/etc/tomcat7/ssl-test/
 sh_home=/etc/init.d/
 tomcat_home=/etc/tomcat7/
 new_home=/home/master/new_war/
-
-#read ser
-#sh $sh_home$ser stop
 
 ls_tomcat_home=$(ls $tomcat_home)
 echo $ls_tomcat_home
