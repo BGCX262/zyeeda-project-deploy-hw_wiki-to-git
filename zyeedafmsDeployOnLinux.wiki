@@ -1,0 +1,108 @@
+#labels zyeeda-framework,zyeeda-fms,deploy
+zyeeda-fms 的项目结构,一共有7个分开的项目：
+
+1、zyeeda-fms-web 是zyeeda-fms的主项目，它是一个web项目，平时是通过它打包到tomcat进行项目布署的
+
+2、它依赖3个Java后台项目 ：zyeeda-framework，zyeeda-fms-backend，zyeeda-4d-backend
+
+3、同时关联3个前台资源项目 ：csg-ehvgz-4d，csg-ehvgz-fms，public
+
+
+项目更新打包
+1、布署项目前要将这7个项目更新至最新，更新路径去http://192.168.1.14/hg 上匹配
+
+2、然后将zyeeda-framework，zyeeda-fms-backend，zyeeda4d-backend依次mvn install
+
+3、之后再将zyeeda-fms-web mvn package, 进入此项目的target目录，会得到一个打好的war包和相同名称的解压的文件夹，将此文件夹重命名为ROOT，然后进入ROOT目录，分别将那3个
+前台资源项目csg-ehvgz-4d，csg-ehvgz-fms，public 拷贝进来，这样就形成了一个完整的项目。
+
+4、配置，因为IP与环境的不同，需修改几个配置文件，如下：
+
+a、 ROOT\csg-ehvgz-4d\lib\zyeeda\common\config.js,跟IP有关的配置，改为服务器的IP
+
+/*system config*/
+ZUI.currentSystemConfig = {
+        ldapDepartmentUrl : 'http://192.168.1.85:9300/rest/depts/root/children?type=task&type=task&isFilter=true',
+        ldapChildDepartmentUrl : 'http://192.168.1.85:9300/rest/depts/root_and_second_level_dept_vo?type=task&isFilter=true',
+        zdexSystemUrl : 'http://192.168.1.86:9200/index.jsp',
+        contextLoginUrl : 'http://192.168.1.85:9300/accounts/openid/signin.jsp',
+        opSignoutUrl : 'http://192.168.1.87:9100/provider/signout.jsp',
+        rpSignoutUrl : 'http://192.168.1.85:9300/accounts/openid/signout.jsp'
+}
+
+
+b、ROOT\WEB-INF\classes\META-INF\orm\persistence-unit-metadata.orm.xml ，应为
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm classpath:///META-INF/schema/orm_2_0.xsd"
+    version="2.0">
+    
+    <persistence-unit-metadata>
+        <persistence-unit-defaults>
+            <schema>CSG_EHVGZ_4D</schema>
+        </persistence-unit-defaults>
+    </persistence-unit-metadata>
+    
+</entity-mappings>
+
+
+上传至服务器并布署
+
+1、改好之后，将整个ROOT文件夹 用压缩工具压缩成zip格式，以版本号命名，比如fms-1.2.4.9.zip （以这个版本开始，之前的版本已存在）
+
+2、然后用FileZilla 上传至服务器上，（FileZilla FTP管理工具，内网11 FTP的soft/network 文件夹中有，找不到网上下载）
+大服务器的IP 192.168.1.85 用户名 root ，密码 123456 FTP端口 22， 用FileZilla 连上之后，将刚刚打好的zip包(fms-1.2.4.9.zip)上传至服务器的 /root/new_war/中
+
+3、上传完之后，用putty ssh到服务器（putty ssh 远程linux工具，网上下，很小），用root 用户连上之后，命令 cd new_war 直接进入new_war文件夹
+
+4、ls 命令可看到刚刚上传的项目zip包(fms-1.2.4.9.zip) ， 使用解压命令 unzip fms-1.2.4.9.zip 将其解压，得到一个fms-1.2.4.9的文件夹
+
+5、项目布署：在new_war文件夹中有个deploy.sh 文件，用命令sh deploy.sh 执行：过程中会出现三次输入提示:
+
+   a、提示输入要备份的项目，输入zyeeda-fms
+
+   b、提示输入打好的项目包，输入刚刚解压的项目文件夹名字，fms-1.2.4.9
+
+   c、提示输入要重启的项目服务命，输入zyeeda-fms
+
+6、执行完之后，会输入tomcat启动日志，若tomcat启动成功，项目布署完毕。
+
+
+附上 deploy.sh code
+
+
+#!/bin/bash
+#description 项目部署脚本，请以root运行
+#
+
+#sh_home=/etc/tomcat7/ssl-test/
+sh_home=/etc/init.d/
+tomcat_home=/etc/tomcat7/
+new_home=/home/master/new_war/
+
+#echo "Stop your application, it will open automatically after you deploy,\ninput services namei[zyeeda-fms zyeeda-dex zyeeda-opex]: \c"
+#read ser
+#sh $sh_home$ser stop
+
+ls_tomcat_home=$(ls $tomcat_home)
+echo $ls_tomcat_home
+echo "Please input your backup project name[zyeeda-fms zyeeda-dex zyeeda-opex]: \c"
+read pname
+rm -rf $tomcat_home$pname/webapps.bak
+cp -a $tomcat_home$pname/webapps $tomcat_home$pname/webapps.bak
+
+ls_new_home=$(ls $new_home)
+echo $ls_new_home
+echo "Please input your new project name[fms-1.2.3]: \c"
+read newpname
+cp -a $new_home$newpname/* $tomcat_home$pname/webapps
+chown -R tomcat:tomcat $tomcat_home$pname/webapps/**
+echo "Do not forget config your application"
+
+echo "Restart your application \ninput services namei[zyeeda-fms zyeeda-dex zyeeda-opex]: \c"
+read ser
+sh $sh_home$ser restart
+tail -f $tomcat_home$pname/logs/catalina-daemon.out
