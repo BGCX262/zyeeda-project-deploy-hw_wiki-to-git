@@ -7,8 +7,8 @@ zyeeda-fms 的项目结构,一共有7个分开的项目：
 
 3、同时关联3个前台资源项目 ：csg-ehvgz-4d，csg-ehvgz-fms，public
 
-
 项目更新打包
+
 1、布署项目前要将这7个项目更新至最新，更新路径去http://192.168.1.14/hg 上匹配
 
 2、然后将zyeeda-framework，zyeeda-fms-backend，zyeeda4d-backend依次mvn install
