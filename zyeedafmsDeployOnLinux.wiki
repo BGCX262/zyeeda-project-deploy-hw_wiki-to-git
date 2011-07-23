@@ -85,7 +85,6 @@ b、ROOT\WEB-INF\classes\META-INF\orm\persistence-unit-metadata.orm.xml ，应�
 #!/bin/bash
 #description 项目部署脚本，请以root运行
 #
-#sh_home=/etc/tomcat7/ssl-test/
 sh_home=/etc/init.d/
 tomcat_home=/etc/tomcat7/
 new_home=/home/master/new_war/
