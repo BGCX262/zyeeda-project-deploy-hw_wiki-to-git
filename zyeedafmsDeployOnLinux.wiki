@@ -76,7 +76,7 @@ b、ROOT\WEB-INF\classes\META-INF\orm\persistence-unit-metadata.orm.xml ，应�
 
    c、提示输入要重启的项目服务命，输入zyeeda-fms
 
-6、执行完之后，会输入tomcat启动日志，若tomcat启动成功，项目布署完毕。
+6、执行完之后，会输出tomcat启动日志，若tomcat启动成功，项目布署完毕。
 
 
 附上 deploy.sh code
